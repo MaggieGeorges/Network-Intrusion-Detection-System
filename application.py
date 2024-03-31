@@ -73,14 +73,17 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/flask'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    user = None  # Initialize user variable to avoid UnboundLocalError
     if request.method == 'POST':
         username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
 
-        # Check if the user exists in the database
-        user = Users.query.filter_by(username=username).first()
+        # Check if the user exists in the database by username or email
+        user = Users.query.filter((Users.username == username) | (Users.email == email)).first()
 
         if user:
             # Verify the password
@@ -100,22 +103,31 @@ def index():
 def signup():
     if request.method == 'POST':
         username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
+        confirm_password = request.form['confirm_password']
 
         existing_user = Users.query.filter_by(username=username).first()
         if existing_user:
             flash('Username already exists. Please choose a different one.', 'error')
             return redirect(url_for('signup'))
 
-        new_user = Users(username=username, password=password)
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return redirect(url_for('signup'))
+
+        new_user = Users(username=username, email=email, password=password)
         db.session.add(new_user)
         db.session.commit()
 
-        flash('Account created successfully. You can now login.', 'success')
-        return redirect(url_for('login'))
+        if new_user.id:
+            flash('Account created successfully. You can now login.', 'success')
+            return redirect(url_for('index'))  # Redirect to login page after successful signup
+        else:
+            flash('Failed to create account. Please try again.', 'error')
+            return redirect(url_for('signup'))
 
-    return render_template('signup.html')
-
+    return render_template('signup.html')  # Render the signup form template without pre-filled values
 
 #turning the flask app into a socketio app
 socketio = SocketIO(app, async_mode=None, logger=True, engineio_logger=True)

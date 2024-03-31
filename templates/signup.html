@@ -3,22 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <h1 style="text-align: center;">Real-Time Network Intrusion Detection System</h1>
     <title>Sign Up</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .signup-link {
+            text-align: center;
+        }
+        .login-form {
+            margin: 0 auto;
+            width: 50%;
+            text-align: center;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .login-form label {
+            display: block;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+        .login-form input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .login-form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Sign Up</h2>
-    <form method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username"><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password"><br><br>
-        <input type="submit" value="Sign Up">
-    </form>
-    <div class="buttons">
-        
-        <a href="{{ url_for('login') }}" class="button">Login</a>
+    <div class="login-form">
+        <h2>Sign Up</h2>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+            <div class="toast-header">
+                <strong class="mr-auto text-primary">Message</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {% for category, message in messages %}
+                    <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form id="signupForm" method="post" action="{{ url_for('signup') }}" onsubmit="return validatePassword()" autocomplete="off">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username"><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email"><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"><br>
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password"><br>
+            <span id="password_error" class="error"></span><br>
+            <input type="submit" value="Sign Up">
+        </form>
+        <p class="signup-link">Already have an account? <a href="{{ url_for('index') }}" class="button">Login</a></p>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+  function validatePassword() {
+    var password = document.getElementById("password").value;
+    var confirm_password = document.getElementById("confirm_password").value;
+    var email = document.getElementById("email").value;
+    var error_message = document.getElementById("password_error");
+
+    if (password.length < 6) {
+        displayErrorMessage("Password must be at least 6 characters long");
+        return false;
+    }
+
+    if (password !== confirm_password) {
+        displayErrorMessage("Passwords do not match");
+        return false;
+    }
+
+    if (email.length === 0) {
+        displayErrorMessage("Email address is required");
+        return false;
+    }
+
+    // If passwords match and email is provided, clear any previous error message
+    error_message.innerText = "";
+    return true;
+}
+
+function displayErrorMessage(message) {
+    var error_message = document.getElementById("password_error");
+    error_message.innerHTML = '<div class="alert alert-danger" role="alert">Message <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + message + '</div>';
+
+    setTimeout(function() {
+        error_message.innerText = "";
+    }, 3000); // 3 seconds
+}
+        $(document).ready(function(){
+            $('.toast').toast('show');
+        });
+    </script>
 </body>
 </html>

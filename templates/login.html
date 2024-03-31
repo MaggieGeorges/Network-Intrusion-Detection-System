@@ -3,21 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <h1 style="text-align: center;">Real-Time Network Intrusion Detection System</h1>
     <title>Login</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .signup-link {
+            text-align: center;
+        }
+        .login-form {
+            margin: 0 auto;
+            width: 50%; /* Adjust width as needed */
+            text-align: center;
+            background-color: #f8f9fa; /* Set background color */
+            padding: 20px; /* Add padding for better appearance */
+            border-radius: 10px; /* Add border radius for rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+        }
+        .login-form label {
+            display: block;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .login-form input {
+            width: 100%; /* Set input width to 100% */
+            padding: 8px; /* Increase padding for better appearance */
+            margin-bottom: 10px;
+            font-size: 16px; /* Increase font size for better readability */
+            border-radius: 5px; /* Add border radius for rounded corners */
+            border: 1px solid #ced4da; /* Add border for input */
+        }
+        .login-form input[type="submit"] {
+            background-color: #007bff; /* Set button background color */
+            color: #fff; /* Set button text color */
+            border: none; /* Remove button border */
+            padding: 10px 20px; /* Add padding for button */
+            font-size: 16px; /* Set button font size */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            border-radius: 5px; /* Add border radius for rounded corners */
+        }
+        .login-form input[type="submit"]:hover {
+            background-color: #0056b3; /* Change button background color on hover */
+        }
+    </style>
 </head>
 <body>
-    <h2>Login</h2>
-    <form method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username"><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password"><br><br>
-        <input type="submit" value="Login">
-    </form>
-    <div class="buttons">
-        <a href="{{ url_for('signup') }}" class="button">Sign Up</a>
-        
+    <div class="login-form">
+        <h2>Login</h2>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+            <div class="toast-header">
+                <strong class="mr-auto text-primary">Message</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {% for category, message in messages %}
+                    <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form method="post" action="{{ url_for('index') }}">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username"><br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email"><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"><br>
+            <input type="submit" value="Login">
+        </form>
+        <p class="signup-link">Don't have an account? <a href="{{ url_for('signup') }}" class="button">Sign Up</a></p>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.toast').toast('show');
+        });
+    </script>
 </body>
 </html>

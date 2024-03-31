@@ -15,6 +15,7 @@ label {
 }
 
 input[type="text"],
+input[type="email"],
 input[type="password"],
 input[type="submit"] {
     width: 100%;
@@ -32,6 +33,10 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background-color: #45a049;
+}
+h1 {
+    font-size: 14px; /* Adjust the font size as needed */
+    text-align: center;
 }
 
 h2 {
